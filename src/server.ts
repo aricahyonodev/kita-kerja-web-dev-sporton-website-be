@@ -13,10 +13,8 @@ mongoose
     console.log("Connected to MongoDB");
 
     // LOCAL development
-    if (process.env.NODE_ENV !== "production") {
       app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
       });
-    }
   })
   .catch((err) => console.error("Error connecting to MongoDB:", err));
