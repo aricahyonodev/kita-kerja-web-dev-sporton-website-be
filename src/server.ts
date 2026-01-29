@@ -6,15 +6,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const PORT = Number(process.env.PORT) || 5001;
-const MONGO_URL =
-  process.env.MONGO_URL ||
-  "mongodb+srv://cahyonoari81_db_user:a723qqkghrmWMeba@cluster0.wplgzjj.mongodb.net/?appName=Cluster0";
+const MONGO_URL = process.env.MONGO_URL || "";
 
 if (!MONGO_URL) {
   throw new Error("MONGO_URL not defined in environment variables");
 }
 
-// Connection caching for serverless (Vercel)
+// -----------------------------
+// Connection caching for serverless
+// -----------------------------
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -32,12 +32,28 @@ async function connectDB() {
   return cached.conn;
 }
 
-// Connect to MongoDB
+// -----------------------------
+// Graceful exit (disconnect Mongoose)
+// -----------------------------
+const gracefulExit = async () => {
+  if (cached.conn) {
+    await mongoose.disconnect();
+    console.log("MongoDB disconnected on app termination");
+  }
+  process.exit(0);
+};
+
+process.on("SIGINT", gracefulExit); // CTRL+C
+process.on("SIGTERM", gracefulExit); // Vercel / Heroku shutdown
+
+// -----------------------------
+// Connect to MongoDB and start server (local only)
+// -----------------------------
 connectDB()
   .then(() => {
     console.log("Connected to MongoDB");
 
-    // Only listen on local development
+    // Only listen in local development
     if (process.env.NODE_ENV !== "production") {
       app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
