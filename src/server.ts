@@ -3,15 +3,20 @@ import app from "./app";
 import dotenv from "dotenv";
 
 dotenv.config();
-const PORT = process.env.PORT || "5001";
+const PORT = process.env.PORT || 5001;
 const MONGO_URL = process.env.MONGO_URL || "no-mongo-uri";
 
+// Connect MongoDB
 mongoose
   .connect(MONGO_URL)
   .then(() => {
     console.log("Connected to MongoDB");
-    app.listen(PORT, () => {
-      console.log(`server is running on port ${PORT}`);
-    });
+
+    // LOCAL development
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+      });
+    }
   })
-  .catch((err) => console.error("Error connection to MongoDB:", err));
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
