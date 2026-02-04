@@ -3,6 +3,8 @@ import cors from "cors";
 import authRouter from "./routes/auth.router";
 import categoryRouter from "./routes/category.router";
 import productRouter from "./routes/product.router";
+import bankRouter from "./routes/bank.router";
+import transactionRouter from "./routes/transaction.router";
 import { authenticate } from "./middlewares/auth.middleware";
 import path from "node:path";
 
@@ -16,6 +18,8 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/auth", authRouter)
 app.use("/api/categories", categoryRouter)
 app.use("/api/products", productRouter)
+app.use("/api/banks", bankRouter)
+app.use("/api/transactions", transactionRouter)
 
 app.get("/", (req, res)=>{
     res.send("Hello Express!")

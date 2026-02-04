@@ -4,8 +4,6 @@ import Product from "../models/product.models";
 const createProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const productData = req.body;
-    console.log("hello");
-    
 
     if (req.file) {
       productData.imageurl = req.file.path;
